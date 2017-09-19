@@ -232,7 +232,12 @@ video_capture_external.o|device_info_external.o"
   local extras=$(find \
     ./obj/third_party/libvpx/libvpx_* \
     ./obj/third_party/libjpeg_turbo/simd_asm \
-    ./obj/third_party/boringssl/boringssl_asm -name '*\.o')
+    ./obj/third_party/boringssl/boringssl_asm \
+    ./obj/third_party/ffmpeg/ffmpeg_yasm \
+    ./obj/third_party/openh264/openh264_common_yasm \
+    ./obj/third_party/openh264/openh264_encoder_yasm \
+    ./obj/third_party/openh264/openh264_processing_yasm -name '*\.o')
+
   echo "$extras" | tr ' ' '\n' >>libwebrtc_full.list
   # generate the archive
   cat libwebrtc_full.list | xargs ar -crs libwebrtc_full.a
@@ -255,7 +260,7 @@ function compile() {
   local target_cpu="$4"
   local configs="$5"
   local disable_iterator_debug="$6"
-  local common_args="is_component_build=false rtc_include_tests=false treat_warnings_as_errors=false"
+  local common_args="is_component_build=false rtc_include_tests=false rtc_use_h264=true treat_warnings_as_errors=false"
   local target_args="target_os=\"$target_os\" target_cpu=\"$target_cpu\""
 
   [ "$disable_iterator_debug" = 1 ] && common_args+=' enable_iterator_debugging=false'
