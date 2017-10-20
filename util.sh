@@ -164,9 +164,18 @@ function patch() {
   # This removes the examples from being built.
   sed -i.bak 's|"//webrtc/examples",|#"//webrtc/examples",|' BUILD.gn
   # This configures whether to build with RTTI enabled or not.
-  [ "$rtti_enabled" = 1 ] && sed -i.bak \
-    's|"//build/config/compiler:no_rtti",|"//build/config/compiler:rtti",|' \
-    build/config/BUILDCONFIG.gn
+  if [ "$rtti_enabled" = 1 ]; then
+    sed -i.bak \
+      's|"//build/config/compiler:no_rtti",|"//build/config/compiler:rtti",|' \
+      build/config/BUILDCONFIG.gn
+    sed -i.bak \
+      's|"//build/config/compiler:no_rtti",  # ICU uses RTTI.| |' \
+      third_party/icu/BUILD.gn
+    sed -i.bak \
+      's|"//build/config/compiler:rtti",| |' \
+      third_party/icu/BUILD.gn
+  fi
+
   popd >/dev/null
 }
 
